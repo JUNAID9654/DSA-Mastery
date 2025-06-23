@@ -1,0 +1,1153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Linear Data Structures - DSA Mastery</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* ===== CSS Variables ===== */
+        :root {
+            --primary: #4361ee;
+            --primary-dark: #3a56d4;
+            --primary-light: #e0e7ff;
+            --secondary: #3f37c9;
+            --accent: #4895ef;
+            --success: #22c55e;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --light: #f8f9fa;
+            --dark: #212529;
+            --gray: #6c757d;
+            --gray-light: #e9ecef;
+            --card-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            --card-shadow-hover: 0 10px 25px rgba(0, 0, 0, 0.15);
+            --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            --gradient-primary: linear-gradient(135deg, #4361ee, #3f37c9);
+            --gradient-accent: linear-gradient(135deg, #4895ef, #4cc9f0);
+        }
+
+        /* ===== Base Styles ===== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            line-height: 1.6;
+            color: var(--dark);
+            background: linear-gradient(135deg, #f5f7fb 0%, #e8f0fe 100%);
+            min-height: 100vh;
+            -webkit-font-smoothing: antialiased;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        /* ===== Navigation Styles ===== */
+        .navbar {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            padding: 1rem 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .nav-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            font-weight: 700;
+            font-size: 1.6rem;
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-decoration: none;
+            transition: var(--transition);
+        }
+
+        .logo:hover {
+            transform: scale(1.05);
+        }
+
+        .logo i {
+            margin-right: 0.8rem;
+            font-size: 2rem;
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .nav-menu {
+            display: flex;
+            list-style: none;
+            align-items: center;
+            gap: 1.5rem;
+        }
+
+        .nav-menu a {
+            color: var(--dark);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.9rem;
+            padding: 0.6rem 1.2rem;
+            border-radius: 8px;
+            position: relative;
+            transition: var(--transition);
+            white-space: nowrap;
+        }
+
+        .nav-menu a:hover {
+            color: var(--primary);
+            background: var(--primary-light);
+            transform: translateY(-2px);
+        }
+
+        .nav-menu .active-link {
+            color: white;
+            background: var(--gradient-primary);
+            box-shadow: 0 4px 15px rgba(67, 97, 238, 0.3);
+        }
+
+        .loop-highlight {
+            background: var(--gradient-accent) !important;
+            color: white !important;
+            font-weight: 600;
+            animation: pulse 2s infinite;
+            box-shadow: 0 4px 20px rgba(72, 149, 239, 0.4);
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        /* Dropdown styles */
+        .dropdown {
+            position: relative;
+        }
+
+        .dropdown > a {
+            display: flex;
+            align-items: center;
+        }
+
+        .dropdown > a::after {
+            content: '\f107';
+            font-family: 'Font Awesome 5 Free';
+            font-weight: 900;
+            margin-left: 8px;
+            transition: var(--transition);
+        }
+
+        .dropdown:hover > a::after {
+            transform: rotate(180deg);
+        }
+
+        .dropdown-content {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+            min-width: 200px;
+            padding: 0.5rem 0;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(10px);
+            transition: var(--transition);
+            z-index: 100;
+        }
+
+        .dropdown:hover .dropdown-content {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        .dropdown-content a {
+            display: block;
+            padding: 0.8rem 1.5rem;
+            border-radius: 0;
+            color: var(--dark);
+            transition: var(--transition);
+            border-left: 3px solid transparent;
+        }
+
+        .dropdown-content a:hover {
+            background: var(--primary-light);
+            color: var(--primary);
+            border-left: 3px solid var(--primary);
+            transform: none;
+        }
+
+        /* Mobile menu button */
+        .mobile-menu-toggle {
+            display: none;
+            background: transparent;
+            border: none;
+            font-size: 1.5rem;
+            color: var(--primary);
+            cursor: pointer;
+            padding: 0.5rem;
+            border-radius: 8px;
+            transition: var(--transition);
+        }
+
+        .mobile-menu-toggle:hover {
+            background: var(--primary-light);
+        }
+
+        /* ===== Content Styles ===== */
+        .content-container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 2rem;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.05);
+        }
+
+        .page-title {
+            text-align: center;
+            margin-bottom: 2rem;
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            font-size: 2.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid var(--primary-light);
+        }
+
+        .subtopic {
+            margin-bottom: 3rem;
+            padding: 1.5rem;
+            background: var(--light);
+            border-radius: 12px;
+            transition: var(--transition);
+            border-left: 4px solid var(--primary);
+        }
+
+        .subtopic:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--card-shadow-hover);
+        }
+
+        .subtopic-title {
+            color: var(--primary);
+            font-size: 1.8rem;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+        }
+
+        .subtopic-title i {
+            margin-right: 10px;
+            font-size: 1.5rem;
+        }
+
+        .definition-box {
+            background: var(--primary-light);
+            padding: 1.5rem;
+            border-radius: 10px;
+            margin-bottom: 1.5rem;
+        }
+
+        .definition-box p {
+            margin-bottom: 0.8rem;
+        }
+
+        .analogy-box {
+            background: #fffae6;
+            border-left: 4px solid var(--warning);
+            padding: 1.2rem;
+            margin-bottom: 1.5rem;
+            border-radius: 0 8px 8px 0;
+        }
+
+        .code-block {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin: 1.5rem 0;
+            overflow-x: auto;
+            font-family: 'Fira Code', monospace;
+            position: relative;
+        }
+
+        .code-block pre {
+            margin: 0;
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+
+        .copy-button {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .copy-button:hover {
+            background: var(--primary);
+        }
+
+        .example-title {
+            background: var(--gradient-accent);
+            color: white;
+            padding: 0.8rem 1.2rem;
+            border-radius: 8px;
+            margin: 2rem 0 1rem;
+            display: inline-block;
+        }
+
+        .note {
+            background: #e3f2fd;
+            border-left: 4px solid var(--accent);
+            padding: 1rem;
+            border-radius: 0 8px 8px 0;
+            margin: 1.5rem 0;
+        }
+
+        .note strong {
+            color: var(--accent);
+        }
+
+        /* ===== Footer ===== */
+        .footer {
+            background: var(--dark);
+            color: white;
+            padding: 3rem 0;
+            text-align: center;
+            margin-top: 3rem;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        .social-links {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin: 2rem 0;
+        }
+
+        .social-links a {
+            width: 50px;
+            height: 50px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.2rem;
+            transition: var(--transition);
+            backdrop-filter: blur(10px);
+        }
+
+        .social-links a:hover {
+            background: var(--primary);
+            transform: translateY(-3px);
+        }
+
+        .copyright {
+            color: var(--gray);
+            font-size: 1rem;
+            margin-top: 1rem;
+        }
+
+        /* ===== Responsive Design ===== */
+        @media (max-width: 1024px) {
+            .nav-menu {
+                gap: 1rem;
+            }
+            
+            .nav-menu a {
+                font-size: 0.8rem;
+                padding: 0.5rem 0.8rem;
+            }
+        }
+
+        @media (max-width: 900px) {
+            .nav-menu {
+                position: fixed;
+                top: 80px;
+                left: 0;
+                right: 0;
+                flex-direction: column;
+                background: white;
+                padding: 2rem;
+                box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+                transform: translateY(-150%);
+                opacity: 0;
+                transition: var(--transition);
+                z-index: 999;
+                align-items: flex-start;
+            }
+
+            .nav-menu.active {
+                transform: translateY(0);
+                opacity: 1;
+            }
+
+            .mobile-menu-toggle {
+                display: block;
+            }
+
+            .dropdown > a::after {
+                position: absolute;
+                right: 20px;
+            }
+
+            .dropdown-content {
+                position: static;
+                box-shadow: none;
+                max-height: 0;
+                overflow: hidden;
+                padding: 0;
+                transition: max-height 0.3s ease, padding 0.3s ease;
+            }
+
+            .dropdown.active .dropdown-content {
+                max-height: 500px;
+                padding: 0.5rem 0;
+                opacity: 1;
+                visibility: visible;
+                transform: none;
+            }
+
+            .dropdown-content a {
+                padding-left: 2.5rem;
+            }
+
+            .dropdown.active > a::after {
+                transform: rotate(180deg);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .nav-container {
+                flex-wrap: wrap;
+            }
+
+            .page-title {
+                font-size: 2rem;
+            }
+
+            .subtopic-title {
+                font-size: 1.5rem;
+            }
+
+            .content-container {
+                padding: 1.5rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 0 1rem;
+            }
+
+            .content-container {
+                padding: 1rem;
+            }
+            
+            .subtopic {
+                padding: 1rem;
+            }
+            
+            .code-block {
+                padding: 1rem;
+                font-size: 0.85rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<!-- Header Navigation -->
+<nav class="navbar">
+    <div class="nav-container">
+        <a href="index.html" class="logo">
+            <i class="fas fa-project-diagram"></i>
+            <span>DSA Mastery</span>
+        </a>
+        
+        <button class="mobile-menu-toggle" id="mobileMenuToggle">
+            <i class="fas fa-bars"></i>
+        </button>
+        
+        <ul class="nav-menu" id="navMenu">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="programming_basics.html">Basics</a></li>
+            <li><a href="logic_building.html">Logic</a></li>
+            
+            <li class="dropdown">
+                <a href="#" class="active-link">Data Structures <i class="fas fa-chevron-down"></i></a>
+                <div class="dropdown-content">
+                    <a href="linear_ds.html" class="active-link">Linear DS</a>
+                    <a href="non_linear_ds.html">Non-Linear DS</a>
+                </div>
+            </li>
+            
+            <li class="dropdown">
+                <a href="#">Algorithms <i class="fas fa-chevron-down"></i></a>
+                <div class="dropdown-content">
+                    <a href="searching.html">Searching</a>
+                    <a href="sorting.html">Sorting</a>
+                    <a href="algorithms.html">Core Algorithms</a>
+                </div>
+            </li>
+            
+            <li><a href="techniques.html">Techniques</a></li>
+            <li><a href="advanced.html">Advanced</a></li>
+            <li><a href="interview.html">Interview</a></li>
+            <li><a href="loop.html" class="loop-highlight">🔥 Loops</a></li>
+        </ul>
+    </div>
+</nav>
+
+<!-- Main Content -->
+<div class="container">
+    <div class="content-container">
+        <h1 class="page-title">Linear Data Structures</h1>
+        
+        <!-- Arrays -->
+        <div class="subtopic">
+            <h2 class="subtopic-title"><i class="fas fa-list"></i> Arrays (Static/Dynamic, Sliding Window, Prefix Sum)</h2>
+            
+            <div class="definition-box">
+                <p><strong>Definition:</strong> Arrays are collections of elements of the same type stored in contiguous memory. Static arrays have fixed size, dynamic arrays (like vectors) can resize, sliding window processes subarrays, and prefix sum stores cumulative sums.</p>
+                <p><strong>Usage:</strong> Used for storing lists, efficient range queries (prefix sum), or processing subarrays (sliding window).</p>
+            </div>
+            
+            <div class="analogy-box">
+                <p><strong>Real-life Analogy:</strong> Like a row of mailboxes, each holding one letter (static array), or a resizable notebook (dynamic array). Sliding window is like reading a few pages at a time, and prefix sum is like keeping a running total of expenses.</p>
+            </div>
+            
+            <h3 class="example-title">Syntax Example</h3>
+            <div class="code-block">
+                <button class="copy-button">Copy</button>
+                <pre><code>#include &lt;iostream&gt;
+#include &lt;vector&gt;
+using namespace std;
+
+int main() {
+    int arr[5] = {1, 2, 3, 4, 5}; // Static array
+    vector&lt;int&gt; vec = {1, 2, 3}; // Dynamic array
+    int prefix[5]; // Prefix sum
+    
+    prefix[0] = arr[0];
+    for (int i = 1; i &lt; 5; i++) {
+        prefix[i] = prefix[i-1] + arr[i];
+    }
+    
+    cout &lt;&lt; prefix[4] &lt;&lt; endl; // Sum of first 5 elements
+}</code></pre>
+            </div>
+            
+            <div class="note">
+                <strong>Explanation:</strong><br>
+                - <code>int arr[5]</code>: Static array of 5 integers<br>
+                - <code>vector&lt;int&gt; vec</code>: Dynamic array that can grow<br>
+                - <code>prefix[i] = prefix[i-1] + arr[i]</code>: Computes prefix sum<br>
+                - <code>cout &lt;&lt; prefix[4]</code>: Outputs sum of array elements
+            </div>
+            
+            <h3 class="example-title">Example 1: Subarray Sum with Prefix Sum</h3>
+            <div class="code-block">
+                <button class="copy-button">Copy</button>
+                <pre><code>#include &lt;iostream&gt;
+using namespace std;
+
+int main() {
+    int arr[] = {1, 2, 3, 4, 5};
+    int n = 5;
+    int prefix[n];
+    
+    prefix[0] = arr[0];
+    for (int i = 1; i &lt; n; i++) {
+        prefix[i] = prefix[i-1] + arr[i];
+    }
+    
+    int l = 1, r = 3; // 0-based indexing
+    int sum = (l == 0) ? prefix[r] : prefix[r] - prefix[l-1];
+    
+    cout &lt;&lt; "Subarray sum: " &lt;&lt; sum &lt;&lt; endl;
+    return 0;
+}</code></pre>
+            </div>
+            
+            <h3 class="example-title">Example 2: Sliding Window Maximum Sum</h3>
+            <div class="code-block">
+                <button class="copy-button">Copy</button>
+                <pre><code>#include &lt;iostream&gt;
+using namespace std;
+
+int main() {
+    int arr[] = {1, 4, 2, 10, 2, 3, 1};
+    int n = 7, k = 3;
+    int sum = 0;
+    
+    // Initial window sum
+    for (int i = 0; i &lt; k; i++) {
+        sum += arr[i];
+    }
+    
+    int max_sum = sum;
+    // Slide the window
+    for (int i = k; i &lt; n; i++) {
+        sum = sum + arr[i] - arr[i-k];
+        if (sum > max_sum) max_sum = sum;
+    }
+    
+    cout &lt;&lt; "Max subarray sum: " &lt;&lt; max_sum &lt;&lt; endl;
+    return 0;
+}</code></pre>
+            </div>
+        </div>
+        
+        <!-- Strings -->
+        <div class="subtopic">
+            <h2 class="subtopic-title"><i class="fas fa-font"></i> Strings (Palindrome, Anagram, Pattern Matching)</h2>
+            
+            <div class="definition-box">
+                <p><strong>Definition:</strong> Strings are sequences of characters. Palindromes read the same backward, anagrams are strings with the same characters in different orders, and pattern matching finds substrings.</p>
+                <p><strong>Usage:</strong> Used in text processing, like validating palindromes, checking anagrams, or searching for patterns in strings.</p>
+            </div>
+            
+            <div class="analogy-box">
+                <p><strong>Real-life Analogy:</strong> A palindrome is like a word that looks the same in a mirror (e.g., "deed"). An anagram is like rearranging letter blocks to form a new word. Pattern matching is like searching for a phrase in a book.</p>
+            </div>
+            
+            <h3 class="example-title">Syntax Example</h3>
+            <div class="code-block">
+                <button class="copy-button">Copy</button>
+                <pre><code>#include &lt;iostream&gt;
+#include &lt;string&gt;
+using namespace std;
+
+bool isPalindrome(string s) {
+    int l = 0, r = s.length() - 1;
+    while (l &lt; r) {
+        if (s[l++] != s[r--]) return false;
+    }
+    return true;
+}
+
+int main() {
+    string s = "radar";
+    cout &lt;&lt; (isPalindrome(s) ? "Palindrome" : "Not Palindrome") &lt;&lt; endl;
+}</code></pre>
+            </div>
+            
+            <div class="note">
+                <strong>Explanation:</strong><br>
+                - <code>bool isPalindrome(string s)</code>: Function to check palindrome<br>
+                - <code>while (l &lt; r)</code>: Compares characters from both ends<br>
+                - <code>s[l++] != s[r--]</code>: Returns false if characters differ<br>
+                - <code>return true</code>: String is palindrome if all characters match
+            </div>
+            
+            <h3 class="example-title">Example 1: Palindrome Check</h3>
+            <div class="code-block">
+                <button class="copy-button">Copy</button>
+                <pre><code>#include &lt;iostream&gt;
+#include &lt;string&gt;
+using namespace std;
+
+bool isPalindrome(string s) {
+    int l = 0, r = s.length() - 1;
+    while (l &lt; r) {
+        if (s[l++] != s[r--]) return false;
+    }
+    return true;
+}
+
+int main() {
+    string s;
+    cout &lt;&lt; "Enter a string: ";
+    getline(cin, s);
+    cout &lt;&lt; (isPalindrome(s) ? "Palindrome" : "Not Palindrome") &lt;&lt; endl;
+    return 0;
+}</code></pre>
+            </div>
+            
+            <h3 class="example-title">Example 2: Anagram Check</h3>
+            <div class="code-block">
+                <button class="copy-button">Copy</button>
+                <pre><code>#include &lt;iostream&gt;
+#include &lt;string&gt;
+using namespace std;
+
+bool areAnagrams(string s1, string s2) {
+    if (s1.length() != s2.length()) return false;
+    int count[26] = {0};
+    
+    for (int i = 0; i &lt; s1.length(); i++) {
+        count[s1[i] - 'a']++;
+        count[s2[i] - 'a']--;
+    }
+    
+    for (int i = 0; i &lt; 26; i++) {
+        if (count[i] != 0) return false;
+    }
+    return true;
+}
+
+int main() {
+    string s1, s2;
+    cout &lt;&lt; "Enter two strings: ";
+    getline(cin, s1);
+    getline(cin, s2);
+    cout &lt;&lt; (areAnagrams(s1, s2) ? "Anagrams" : "Not Anagrams") &lt;&lt; endl;
+    return 0;
+}</code></pre>
+            </div>
+        </div>
+        
+        <!-- Linked Lists -->
+        <div class="subtopic">
+            <h2 class="subtopic-title"><i class="fas fa-link"></i> Linked Lists (Singly, Doubly, Circular, Operations)</h2>
+            
+            <div class="definition-box">
+                <p><strong>Definition:</strong> Linked lists are chains of nodes, each containing data and a pointer to the next node (singly), both directions (doubly), or looping back (circular). Operations include insertion, deletion, and traversal.</p>
+                <p><strong>Usage:</strong> Used for dynamic data storage, like playlists or undo operations, where size changes frequently.</p>
+            </div>
+            
+            <div class="analogy-box">
+                <p><strong>Real-life Analogy:</strong> Like a train with cars linked one after another (singly), or a two-way shuttle (doubly), or a merry-go-round (circular).</p>
+            </div>
+            
+            <h3 class="example-title">Syntax Example</h3>
+            <div class="code-block">
+                <button class="copy-button">Copy</button>
+                <pre><code>#include &lt;iostream&gt;
+using namespace std;
+
+struct Node {
+    int data;
+    Node* next;
+    Node(int val) : data(val), next(nullptr) {}
+};
+
+int main() {
+    Node* head = new Node(1);
+    head->next = new Node(2);
+    head->next->next = new Node(3);
+    
+    Node* temp = head;
+    while (temp) {
+        cout &lt;&lt; temp->data &lt;&lt; " ";
+        temp = temp->next;
+    }
+}</code></pre>
+            </div>
+            
+            <div class="note">
+                <strong>Explanation:</strong><br>
+                - <code>struct Node</code>: Defines node with data and next pointer<br>
+                - <code>Node(int val)</code>: Constructor initializes node<br>
+                - <code>head->next = new Node(2)</code>: Links nodes<br>
+                - <code>while (temp)</code>: Traverses and prints list
+            </div>
+            
+            <h3 class="example-title">Example 1: Insert at Front</h3>
+            <div class="code-block">
+                <button class="copy-button">Copy</button>
+                <pre><code>#include &lt;iostream&gt;
+using namespace std;
+
+struct Node {
+    int data;
+    Node* next;
+    Node(int val) : data(val), next(nullptr) {}
+};
+
+void insertAtFront(Node*& head, int val) {
+    Node* newNode = new Node(val);
+    newNode->next = head;
+    head = newNode;
+}
+
+void printList(Node* head) {
+    while (head) {
+        cout &lt;&lt; head->data &lt;&lt; " ";
+        head = head->next;
+    }
+    cout &lt;&lt; endl;
+}
+
+int main() {
+    Node* head = nullptr;
+    insertAtFront(head, 3);
+    insertAtFront(head, 2);
+    insertAtFront(head, 1);
+    printList(head);
+    return 0;
+}</code></pre>
+            </div>
+            
+            <h3 class="example-title">Example 2: Reverse Linked List</h3>
+            <div class="code-block">
+                <button class="copy-button">Copy</button>
+                <pre><code>#include &lt;iostream&gt;
+using namespace std;
+
+struct Node {
+    int data;
+    Node* next;
+    Node(int val) : data(val), next(nullptr) {}
+};
+
+Node* reverseList(Node* head) {
+    Node *prev = nullptr, *curr = head, *next;
+    while (curr) {
+        next = curr->next;
+        curr->next = prev;
+        prev = curr;
+        curr = next;
+    }
+    return prev;
+}
+
+void printList(Node* head) {
+    while (head) {
+        cout &lt;&lt; head->data &lt;&lt; " ";
+        head = head->next;
+    }
+    cout &lt;&lt; endl;
+}
+
+int main() {
+    Node* head = new Node(1);
+    head->next = new Node(2);
+    head->next->next = new Node(3);
+    head = reverseList(head);
+    printList(head);
+    return 0;
+}</code></pre>
+            </div>
+        </div>
+        
+        <!-- Stack -->
+        <div class="subtopic">
+            <h2 class="subtopic-title"><i class="fas fa-layer-group"></i> Stack (LIFO, Infix/Postfix, NGE)</h2>
+            
+            <div class="definition-box">
+                <p><strong>Definition:</strong> Stack is a LIFO (Last In, First Out) data structure. Used for infix-to-postfix conversion and problems like Next Greater Element (NGE).</p>
+                <p><strong>Usage:</strong> Used for expression evaluation, backtracking, or finding the next greater element in arrays.</p>
+            </div>
+            
+            <div class="analogy-box">
+                <p><strong>Real-life Analogy:</strong> Like a stack of plates—you add or remove from the top only. Infix/postfix is like rearranging sentences, and NGE is like finding the next taller building in a row.</p>
+            </div>
+            
+            <h3 class="example-title">Syntax Example</h3>
+            <div class="code-block">
+                <button class="copy-button">Copy</button>
+                <pre><code>#include &lt;iostream&gt;
+#include &lt;stack&gt;
+using namespace std;
+
+int main() {
+    stack&lt;int&gt; s;
+    s.push(1);
+    s.push(2);
+    cout &lt;&lt; s.top() &lt;&lt; endl; // Top element
+    s.pop();
+    cout &lt;&lt; s.top() &lt;&lt; endl; // New top
+}</code></pre>
+            </div>
+            
+            <div class="note">
+                <strong>Explanation:</strong><br>
+                - <code>stack&lt;int&gt; s</code>: Declares stack of integers<br>
+                - <code>s.push(1)</code>: Adds 1 to the top<br>
+                - <code>s.top()</code>: Returns top element<br>
+                - <code>s.pop()</code>: Removes top element
+            </div>
+            
+            <h3 class="example-title">Example 1: Balanced Parentheses</h3>
+            <div class="code-block">
+                <button class="copy-button">Copy</button>
+                <pre><code>#include &lt;iostream&gt;
+#include &lt;stack&gt;
+#include &lt;string&gt;
+using namespace std;
+
+bool isBalanced(string s) {
+    stack&lt;char&gt; st;
+    for (char c : s) {
+        if (c == '(') st.push(c);
+        else if (c == ')') {
+            if (st.empty()) return false;
+            st.pop();
+        }
+    }
+    return st.empty();
+}
+
+int main() {
+    string s;
+    cout &lt;&lt; "Enter expression: ";
+    getline(cin, s);
+    cout &lt;&lt; (isBalanced(s) ? "Balanced" : "Not Balanced") &lt;&lt; endl;
+    return 0;
+}</code></pre>
+            </div>
+            
+            <h3 class="example-title">Example 2: Next Greater Element</h3>
+            <div class="code-block">
+                <button class="copy-button">Copy</button>
+                <pre><code>#include &lt;iostream&gt;
+#include &lt;stack&gt;
+#include &lt;vector&gt;
+using namespace std;
+
+void nextGreater(int arr[], int n) {
+    stack&lt;int&gt; s;
+    vector&lt;int&gt; result(n, -1);
+    
+    for (int i = 0; i &lt; n; i++) {
+        while (!s.empty() &amp;&amp; arr[i] > arr[s.top()]) {
+            result[s.top()] = arr[i];
+            s.pop();
+        }
+        s.push(i);
+    }
+    
+    for (int x : result) cout &lt;&lt; x &lt;&lt; " ";
+}
+
+int main() {
+    int arr[] = {4, 5, 2, 25};
+    int n = 4;
+    nextGreater(arr, n);
+    cout &lt;&lt; endl;
+    return 0;
+}</code></pre>
+            </div>
+        </div>
+        
+        <!-- Queue -->
+        <div class="subtopic">
+            <h2 class="subtopic-title"><i class="fas fa-stream"></i> Queue (FIFO, Circular Queue, Deque, Applications)</h2>
+            
+            <div class="definition-box">
+                <p><strong>Definition:</strong> Queue is a FIFO (First In, First Out) data structure. Circular queue reuses space, deque allows insertion/deletion at both ends, and applications include task scheduling.</p>
+                <p><strong>Usage:</strong> Used in scheduling, breadth-first search, or buffering data streams.</p>
+            </div>
+            
+            <div class="analogy-box">
+                <p><strong>Real-life Analogy:</strong> Like a line at a ticket counter—first person gets served first. Circular queue is like a rotating conveyor belt, and deque is like a double-ended counter.</p>
+            </div>
+            
+            <h3 class="example-title">Syntax Example</h3>
+            <div class="code-block">
+                <button class="copy-button">Copy</button>
+                <pre><code>#include &lt;iostream&gt;
+#include &lt;queue&gt;
+using namespace std;
+
+int main() {
+    queue&lt;int&gt; q;
+    q.push(1);
+    q.push(2);
+    cout &lt;&lt; q.front() &lt;&lt; endl; // Front element
+    q.pop();
+    cout &lt;&lt; q.front() &lt;&lt; endl; // New front
+}</code></pre>
+            </div>
+            
+            <div class="note">
+                <strong>Explanation:</strong><br>
+                - <code>queue&lt;int&gt; q</code>: Declares queue of integers<br>
+                - <code>q.push(1)</code>: Adds 1 to the rear<br>
+                - <code>q.front()</code>: Returns front element<br>
+                - <code>q.pop()</code>: Removes front element
+            </div>
+            
+            <h3 class="example-title">Example 1: Simple Queue</h3>
+            <div class="code-block">
+                <button class="copy-button">Copy</button>
+                <pre><code>#include &lt;iostream&gt;
+#include &lt;queue&gt;
+using namespace std;
+
+int main() {
+    queue&lt;int&gt; q;
+    int n;
+    cout &lt;&lt; "Enter number of elements: ";
+    cin &gt;&gt; n;
+    
+    for (int i = 0; i &lt; n; i++) {
+        int x;
+        cin &gt;&gt; x;
+        q.push(x);
+    }
+    
+    cout &lt;&lt; "Queue elements: ";
+    while (!q.empty()) {
+        cout &lt;&lt; q.front() &lt;&lt; " ";
+        q.pop();
+    }
+    cout &lt;&lt; endl;
+    return 0;
+}</code></pre>
+            </div>
+            
+            <h3 class="example-title">Example 2: Deque Implementation</h3>
+            <div class="code-block">
+                <button class="copy-button">Copy</button>
+                <pre><code>#include &lt;iostream&gt;
+#include &lt;deque&gt;
+using namespace std;
+
+int main() {
+    deque&lt;int&gt; dq;
+    dq.push_back(1);
+    dq.push_front(2);
+    
+    cout &lt;&lt; "Front: " &lt;&lt; dq.front() &lt;&lt; endl;
+    cout &lt;&lt; "Back: " &lt;&lt; dq.back() &lt;&lt; endl;
+    
+    dq.pop_front();
+    cout &lt;&lt; "New front: " &lt;&lt; dq.front() &lt;&lt; endl;
+    return 0;
+}</code></pre>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Footer -->
+<footer class="footer">
+    <div class="footer-content">
+        <div style="margin-bottom: 2rem;">
+            <div class="logo" style="justify-content: center; font-size: 2rem; margin-bottom: 1rem;">
+                <i class="fas fa-project-diagram"></i>
+                <span>DSA Mastery</span>
+            </div>
+            <p style="color: var(--gray); max-width: 600px; margin: 0 auto;">
+                Your comprehensive platform for mastering Data Structures and Algorithms. From basics to advanced topics, we've got you covered!
+            </p>
+        </div>
+        <div class="social-links">
+            <a href="https://github.com/JUNAID9654" target="_blank" title="GitHub"><i class="fab fa-github"></i></a>
+            <a href="https://www.linkedin.com/in/junaid-beg-3b1944251/" target="_blank" title="LinkedIn"><i class="fab fa-linkedin"></i></a>
+            <a href="#" title="Twitter"><i class="fab fa-twitter"></i></a>
+            <a href="https://www.youtube.com/@junaidbeg6596" target="_blank" title="YouTube"><i class="fab fa-youtube"></i></a>
+            <a href="https://discord.com/channels/@me/1081579728261107819" target="_blank" title="Discord"><i class="fab fa-discord"></i></a>
+        </div>
+        <div class="copyright">
+            <p>&copy; 2025 DSA Mastery. All rights reserved. Made with ❤️ for aspiring programmers.</p>
+        </div>
+    </div>
+</footer>
+
+<script>
+    // Mobile menu toggle
+    const mobileMenuToggle = document.getElementById('mobileMenuToggle');
+    const navMenu = document.getElementById('navMenu');
+    
+    mobileMenuToggle.addEventListener('click', function() {
+        navMenu.classList.toggle('active');
+        const icon = this.querySelector('i');
+        if (icon.classList.contains('fa-bars')) {
+            icon.classList.remove('fa-bars');
+            icon.classList.add('fa-times');
+        } else {
+            icon.classList.remove('fa-times');
+            icon.classList.add('fa-bars');
+        }
+    });
+    
+    // Dropdown toggle for mobile
+    const dropdowns = document.querySelectorAll('.dropdown > a');
+    dropdowns.forEach(dropdown => {
+        dropdown.addEventListener('click', function(e) {
+            if (window.innerWidth <= 900) {
+                e.preventDefault();
+                const dropdown = this.parentElement;
+                dropdown.classList.toggle('active');
+            }
+        });
+    });
+    
+    // Close mobile menu when clicking outside
+    document.addEventListener('click', function(e) {
+        if (!navMenu.contains(e.target) && !mobileMenuToggle.contains(e.target) && navMenu.classList.contains('active')) {
+            navMenu.classList.remove('active');
+            mobileMenuToggle.querySelector('i').classList.remove('fa-times');
+            mobileMenuToggle.querySelector('i').classList.add('fa-bars');
+        }
+    });
+    
+    // Navbar background change on scroll
+    window.addEventListener('scroll', function() {
+        const navbar = document.querySelector('.navbar');
+        if (window.scrollY > 100) {
+            navbar.style.background = 'rgba(255, 255, 255, 0.98)';
+            navbar.style.boxShadow = '0 8px 32px rgba(0, 0, 0, 0.15)';
+        } else {
+            navbar.style.background = 'rgba(255, 255, 255, 0.95)';
+            navbar.style.boxShadow = '0 8px 32px rgba(0, 0, 0, 0.1)';
+        }
+    });
+    
+    // Copy button functionality
+    document.querySelectorAll('.copy-button').forEach(button => {
+        button.addEventListener('click', function() {
+            const codeBlock = this.nextElementSibling;
+            const textArea = document.createElement('textarea');
+            textArea.value = codeBlock.textContent;
+            document.body.appendChild(textArea);
+            textArea.select();
+            document.execCommand('copy');
+            document.body.removeChild(textArea);
+            
+            // Show copied feedback
+            const originalText = this.textContent;
+            this.textContent = 'Copied!';
+            setTimeout(() => {
+                this.textContent = originalText;
+            }, 1500);
+        });
+    });
+</script>
+</body>
+</html>

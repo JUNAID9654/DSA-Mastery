@@ -1,0 +1,1205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Core Algorithms | DSA Mastery</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* ===== CSS Variables ===== */
+        :root {
+            --primary: #4361ee;
+            --primary-dark: #3a56d4;
+            --primary-light: #e0e7ff;
+            --secondary: #3f37c9;
+            --accent: #4895ef;
+            --success: #22c55e;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --light: #f8f9fa;
+            --dark: #212529;
+            --gray: #6c757d;
+            --gray-light: #e9ecef;
+            --card-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            --card-shadow-hover: 0 10px 25px rgba(0, 0, 0, 0.15);
+            --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            --gradient-primary: linear-gradient(135deg, #4361ee, #3f37c9);
+            --gradient-accent: linear-gradient(135deg, #4895ef, #4cc9f0);
+        }
+
+        /* ===== Base Styles ===== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            line-height: 1.6;
+            color: var(--dark);
+            background: linear-gradient(135deg, #f5f7fb 0%, #e8f0fe 100%);
+            min-height: 100vh;
+            -webkit-font-smoothing: antialiased;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        /* ===== Navigation Styles ===== */
+        .navbar {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            padding: 1rem 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .nav-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            font-weight: 700;
+            font-size: 1.6rem;
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-decoration: none;
+            transition: var(--transition);
+        }
+
+        .logo:hover {
+            transform: scale(1.05);
+        }
+
+        .logo i {
+            margin-right: 0.8rem;
+            font-size: 2rem;
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .nav-menu {
+            display: flex;
+            list-style: none;
+            align-items: center;
+            gap: 1.5rem;
+        }
+
+        .nav-menu a {
+            color: var(--dark);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.9rem;
+            padding: 0.6rem 1.2rem;
+            border-radius: 8px;
+            position: relative;
+            transition: var(--transition);
+            white-space: nowrap;
+        }
+
+        .nav-menu a:hover {
+            color: var(--primary);
+            background: var(--primary-light);
+            transform: translateY(-2px);
+        }
+
+        .nav-menu .active-link {
+            color: white;
+            background: var(--gradient-primary);
+            box-shadow: 0 4px 15px rgba(67, 97, 238, 0.3);
+        }
+
+
+        .loop-highlight {
+            background: var(--gradient-accent) !important;
+            color: white !important;
+            font-weight: 600;
+            animation: pulse 2s infinite;
+            box-shadow: 0 4px 20px rgba(72, 149, 239, 0.4);
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        /* Dropdown styles */
+        .dropdown {
+            position: relative;
+        }
+
+        .dropdown > a {
+            display: flex;
+            align-items: center;
+        }
+
+        .dropdown > a::after {
+            content: '\f107';
+            font-family: 'Font Awesome 5 Free';
+            font-weight: 900;
+            margin-left: 8px;
+            transition: var(--transition);
+        }
+
+
+        .dropdown:hover > a::after {
+            transform: rotate(180deg);
+        }
+
+        .dropdown-content {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+            min-width: 200px;
+            padding: 0.5rem 0;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(10px);
+            transition: var(--transition);
+            z-index: 100;
+        }
+
+        .dropdown:hover .dropdown-content {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        .dropdown-content a {
+            display: block;
+            padding: 0.8rem 1.5rem;
+            border-radius: 0;
+            color: var(--dark);
+            transition: var(--transition);
+            border-left: 3px solid transparent;
+        }
+
+        .dropdown-content a:hover {
+            background: var(--primary-light);
+            color: var(--primary);
+            border-left: 3px solid var(--primary);
+            transform: none;
+        }
+
+        /* Mobile menu button */
+        .mobile-menu-toggle {
+            display: none;
+            background: transparent;
+            border: none;
+            font-size: 1.5rem;
+            color: var(--primary);
+            cursor: pointer;
+            padding: 0.5rem;
+            border-radius: 8px;
+            transition: var(--transition);
+        }
+
+        .mobile-menu-toggle:hover {
+            background: var(--primary-light);
+        }
+
+        /* ===== Content Styles ===== */
+        .content-container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 2rem;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.05);
+        }
+
+        .page-title {
+            text-align: center;
+            margin-bottom: 1rem;
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            font-size: 2.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid var(--primary-light);
+        }
+        
+        .page-subtitle {
+            text-align: center;
+            font-size: 1.2rem;
+            color: var(--gray);
+            max-width: 800px;
+            margin: 0 auto 2.5rem;
+            line-height: 1.7;
+        }
+
+        .concept-card {
+            background: var(--light);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            transition: var(--transition);
+            border-left: 4px solid var(--primary);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .concept-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--card-shadow-hover);
+        }
+
+        .concept-title {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .concept-icon {
+            width: 50px;
+            height: 50px;
+            background: var(--primary-light);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 1.5rem;
+            color: var(--primary);
+            font-size: 1.5rem;
+            flex-shrink: 0;
+        }
+
+        .concept-title h2 {
+            font-size: 1.8rem;
+            color: var(--primary);
+            margin: 0;
+        }
+        
+        .definition-box {
+            background: var(--primary-light);
+            padding: 1.5rem;
+            border-radius: 10px;
+            margin-bottom: 1.5rem;
+            border-left: 4px solid var(--primary);
+        }
+
+        .code-block {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin: 1.5rem 0;
+            overflow-x: auto;
+            font-family: 'Fira Code', monospace;
+            position: relative;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+
+        .code-block pre {
+            margin: 0;
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+
+        .copy-button {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .copy-button:hover {
+            background: var(--primary);
+        }
+
+        .subtitle {
+            font-size: 1.3rem;
+            color: var(--secondary);
+            margin: 1.5rem 0 1rem;
+            padding-left: 1rem;
+            border-left: 3px solid var(--accent);
+        }
+
+        .inline-code {
+            background: rgba(67, 97, 238, 0.1);
+            color: var(--primary);
+            padding: 0.2rem 0.4rem;
+            border-radius: 4px;
+            font-family: 'Fira Code', monospace;
+            font-size: 0.95rem;
+        }
+
+        .note {
+            background: #e3f2fd;
+            border-left: 4px solid var(--accent);
+            padding: 1.2rem;
+            margin: 1.5rem 0;
+            border-radius: 0 8px 8px 0;
+        }
+
+        .note strong {
+            color: var(--accent);
+        }
+
+        ul, ol {
+            margin: 1.5rem 0;
+            padding-left: 2rem;
+        }
+
+        li {
+            margin-bottom: 0.8rem;
+            line-height: 1.6;
+        }
+        
+        /* Algorithm-specific styles */
+        .example-title {
+            background: var(--gradient-accent);
+            color: white;
+            padding: 0.8rem 1.2rem;
+            border-radius: 8px;
+            margin: 2rem 0 1rem;
+            display: inline-block;
+        }
+        
+        .complexity-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.5rem 0;
+        }
+
+        .complexity-table th,
+        .complexity-table td {
+            padding: 0.8rem;
+            text-align: left;
+            border-bottom: 1px solid var(--gray-light);
+        }
+
+        .complexity-table th {
+            background-color: var(--primary-light);
+            color: var(--primary);
+            font-weight: 600;
+        }
+        
+        .visualization {
+            background: #f0f9ff;
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin: 1.5rem 0;
+            border-left: 4px solid var(--accent);
+            font-family: 'Fira Code', monospace;
+        }
+        
+        .circular-flow {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: wrap;
+            max-width: 300px;
+            margin: 1.5rem auto;
+            position: relative;
+        }
+
+        .circular-step {
+            width: 70px;
+            height: 70px;
+            background: white;
+            border: 2px solid var(--primary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.7rem;
+            text-align: center;
+            padding: 5px;
+            margin: 5px;
+            font-weight: 500;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .circular-arrow {
+            font-size: 1.2rem;
+            color: var(--primary);
+            margin: 0 -5px;
+            transform: rotate(90deg);
+        }
+
+        @media (min-width: 480px) {
+            .circular-flow {
+                flex-wrap: nowrap;
+                max-width: 100%;
+            }
+            .circular-arrow {
+                transform: rotate(0);
+            }
+        }
+
+        /* ===== Footer ===== */
+        .footer {
+            background: var(--dark);
+            color: white;
+            padding: 3rem 0;
+            text-align: center;
+            margin-top: 3rem;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        .social-links {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin: 2rem 0;
+        }
+
+        .social-links a {
+            width: 50px;
+            height: 50px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.2rem;
+            transition: var(--transition);
+            backdrop-filter: blur(10px);
+        }
+
+        .social-links a:hover {
+            background: var(--primary);
+            transform: translateY(-3px);
+        }
+
+        .copyright {
+            color: var(--gray);
+            font-size: 1rem;
+            margin-top: 1rem;
+        }
+
+        /* ===== Responsive Design ===== */
+        @media (max-width: 1024px) {
+            .nav-menu {
+                gap: 1rem;
+            }
+            
+            .nav-menu a {
+                font-size: 0.8rem;
+                padding: 0.5rem 0.8rem;
+            }
+        }
+
+        @media (max-width: 900px) {
+            .nav-menu {
+                position: fixed;
+                top: 80px;
+                left: 0;
+                right: 0;
+                flex-direction: column;
+                background: white;
+                padding: 2rem;
+                box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+                transform: translateY(-150%);
+                opacity: 0;
+                transition: var(--transition);
+                z-index: 999;
+                align-items: flex-start;
+            }
+
+            .nav-menu.active {
+                transform: translateY(0);
+                opacity: 1;
+            }
+
+            .mobile-menu-toggle {
+                display: block;
+            }
+
+            .dropdown > a::after {
+                position: absolute;
+                right: 20px;
+            }
+
+            .dropdown-content {
+                position: static;
+                box-shadow: none;
+                max-height: 0;
+                overflow: hidden;
+                padding: 0;
+                transition: max-height 0.3s ease, padding 0.3s ease;
+            }
+
+            .dropdown.active .dropdown-content {
+                max-height: 500px;
+                padding: 0.5rem 0;
+                opacity: 1;
+                visibility: visible;
+                transform: none;
+            }
+
+            .dropdown-content a {
+                padding-left: 2.5rem;
+            }
+
+            .dropdown.active > a::after {
+                transform: rotate(180deg);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .nav-container {
+                flex-wrap: wrap;
+            }
+
+            .page-title {
+                font-size: 2rem;
+            }
+
+            .concept-title h2 {
+                font-size: 1.5rem;
+            }
+
+            .concept-icon {
+                width: 40px;
+                height: 40px;
+                font-size: 1.2rem;
+            }
+
+            .content-container {
+                padding: 1.5rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 0 1rem;
+            }
+
+            .concept-card {
+                padding: 1rem;
+            }
+            
+            .code-block {
+                padding: 1rem;
+                font-size: 0.85rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<!-- Header Navigation -->
+<nav class="navbar">
+    <div class="nav-container">
+        <a href="index.html" class="logo">
+            <i class="fas fa-project-diagram"></i>
+            <span>DSA Mastery</span>
+        </a>
+        
+        <button class="mobile-menu-toggle" id="mobileMenuToggle">
+            <i class="fas fa-bars"></i>
+        </button>
+        
+        <ul class="nav-menu" id="navMenu">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="programming_basics.html">Basics</a></li>
+            <li><a href="logic_building.html">Logic</a></li>
+            
+            <li class="dropdown">
+                <a href="#">Data Structures <i class="fas fa-chevron-down"></i></a>
+                <div class="dropdown-content">
+                    <a href="linear_ds.html">Linear DS</a>
+                    <a href="non_linear_ds.html">Non-Linear DS</a>
+                </div>
+            </li>
+            
+            <li class="dropdown">
+                <a href="#" class="active-link">Algorithms <i class="fas fa-chevron-down"></i></a>
+                <div class="dropdown-content">
+                    <a href="searching.html">Searching</a>
+                    <a href="sorting.html">Sorting</a>
+                    <a href="algorithms.html" class="active-link">Core Algorithms</a>
+                </div>
+            </li>
+            
+            <li><a href="techniques.html">Techniques</a></li>
+            <li><a href="advanced.html">Advanced</a></li>
+            <li><a href="interview.html">Interview</a></li>
+            <li><a href="loop.html" class="loop-highlight">🔥 Loops</a></li>
+        </ul>
+    </div>
+</nav>
+
+<!-- Main Content -->
+<div class="container">
+    <div class="content-container">
+        <h1 class="page-title">Core Algorithms</h1>
+        <p class="page-subtitle">
+            Essential algorithms for efficient problem solving
+        </p>
+        
+        <!-- Graph Algorithms -->
+        <div class="concept-card">
+            <div class="concept-title">
+                <div class="concept-icon">
+                    <i class="fas fa-project-diagram"></i>
+                </div>
+                <h2>Graph Algorithms</h2>
+            </div>
+            
+            <div class="definition-box">
+                <p><strong>Definition:</strong> Algorithms designed to solve problems on graphs, including traversal, shortest path, and connectivity problems.</p>
+                <p><strong>Usage:</strong> Network routing, social network analysis, dependency resolution, and recommendation systems.</p>
+            </div>
+            
+            <div class="note">
+                <p><strong>Real-life Analogy:</strong> Like finding the fastest route in a city (graph) with intersections (vertices) and roads (edges).</p>
+            </div>
+            
+            <h3 class="example-title">Breadth-First Search (BFS)</h3>
+            <div class="code-block">
+                <button class="copy-button">Copy</button>
+                <pre><code>void BFS(vector&lt;list&lt;int&gt;&gt;& graph, int start) {
+    vector&lt;bool&gt; visited(graph.size(), false);
+    queue&lt;int&gt; q;
+    q.push(start);
+    visited[start] = true;
+
+    while (!q.empty()) {
+        int u = q.front(); q.pop();
+        cout << u << " ";
+        for (int v : graph[u]) {
+            if (!visited[v]) {
+                visited[v] = true;
+                q.push(v);
+            }
+        }
+    }
+}</code></pre>
+            </div>
+            
+            <h3 class="example-title">Depth-First Search (DFS)</h3>
+            <div class="code-block">
+                <button class="copy-button">Copy</button>
+                <pre><code>void DFS(vector&lt;list&lt;int&gt;&gt;& graph, int u, vector&lt;bool&gt;& visited) {
+    visited[u] = true;
+    cout << u << " ";
+    for (int v : graph[u]) {
+        if (!visited[v]) {
+            DFS(graph, v, visited);
+        }
+    }
+}</code></pre>
+            </div>
+            
+            <div class="note">
+                <strong>Applications:</strong> Shortest path in unweighted graphs, connected components, web crawling, 
+                topological sorting, bipartite testing.
+            </div>
+        </div>
+        
+        <!-- Dijkstra's Algorithm -->
+        <div class="concept-card">
+            <div class="concept-title">
+                <div class="concept-icon">
+                    <i class="fas fa-route"></i>
+                </div>
+                <h2>Dijkstra's Algorithm</h2>
+            </div>
+            
+            <div class="definition-box">
+                <p><strong>Definition:</strong> An algorithm for finding the shortest paths from a single source to all other vertices in a graph with non-negative edge weights.</p>
+                <p><strong>Usage:</strong> Navigation systems, network routing protocols, traffic management.</p>
+            </div>
+            
+            <div class="note">
+                <p><strong>Real-life Analogy:</strong> Like finding the fastest driving route between two cities considering different road speeds (weights).</p>
+            </div>
+            
+            <h3 class="example-title">Implementation</h3>
+            <div class="code-block">
+                <button class="copy-button">Copy</button>
+                <pre><code>vector&lt;int&gt; dijkstra(vector&lt;vector&lt;pair&lt;int,int&gt;&gt;&gt;& graph, int src) {
+    int n = graph.size();
+    vector&lt;int&gt; dist(n, INT_MAX);
+    priority_queue&lt;pair&lt;int,int&gt;, vector&lt;pair&lt;int,int&gt;&gt;, greater&lt;&gt;&gt; pq;
+    
+    dist[src] = 0;
+    pq.push({0, src});
+    
+    while (!pq.empty()) {
+        auto [d, u] = pq.top(); pq.pop();
+        if (d > dist[u]) continue;
+        
+        for (auto [v, w] : graph[u]) {
+            if (dist[v] > dist[u] + w) {
+                dist[v] = dist[u] + w;
+                pq.push({dist[v], v});
+            }
+        }
+    }
+    return dist;
+}</code></pre>
+            </div>
+            
+            <h3 class="example-title">Complexity</h3>
+            <table class="complexity-table">
+                <thead>
+                    <tr>
+                        <th>Implementation</th>
+                        <th>Time</th>
+                        <th>Space</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Priority Queue</td>
+                        <td>O(E + V log V)</td>
+                        <td>O(V)</td>
+                    </tr>
+                    <tr>
+                        <td>Array</td>
+                        <td>O(V²)</td>
+                        <td>O(V)</极客时间（2023年最新链接）『gkd.xzywo.com』</td>
+                    </tr>
+                </tbody>
+            </table>
+            
+            <div class="visualization">
+                <strong>Example:</strong> Finding shortest path from A to D<br>
+                Graph: A-(6)-B, A-(2)-C, B-(3)-C, B-(5)-D, C-(1)-D<br>
+                Shortest path A→D: A(0) → C(2) → D(3)
+            </div>
+        </div>
+        
+        <!-- Kruskal's Algorithm -->
+        <div class="concept-card">
+            <div class="concept-title">
+                <div class="concept-icon">
+                    <i class="fas fa-tree"></i>
+                </div>
+                <h2>Kruskal's Algorithm</h2>
+            </div>
+            
+            <div class="definition-box">
+                <p><strong>Definition:</strong> A greedy algorithm that finds a minimum spanning tree (MST) for a connected, weighted graph.</p>
+                <p><strong>Usage:</strong> Network design (telecommunications, water supply), circuit design, cluster analysis.</p>
+            </div>
+            
+            <div class="note">
+                <p><strong>Real-life Analogy:</strong> Like connecting houses with the least amount of cable while ensuring all houses are connected.</p>
+            </div>
+            
+            <h3 class="example-title">Implementation</h3>
+            <div class="code-block">
+                <button class="copy-button">Copy</button>
+                <pre><code>struct Edge { int u, v, weight; };
+
+int find(vector&lt;int&gt;& parent, int i) {
+    if (parent[i] != i)
+        parent[i] = find(parent, parent[i]);
+    return parent[i];
+}
+
+vector&lt;Edge&gt; kruskal(vector&lt;Edge&gt;& edges, int n) {
+    sort(edges.begin(), edges.end(), 
+        [](Edge& a, Edge& b) { return a.weight < b.weight; });
+    
+    vector&lt;int&gt; parent(n);
+    iota(parent.begin(), parent.end(), 0);
+    vector&lt;Edge&gt; mst;
+    
+    for (Edge& e : edges) {
+        int u_root = find(parent, e.u);
+        int v_root = find(parent, e.v);
+        if (u_root != v_root) {
+            mst.push_back(e);
+            parent[v_root] = u_root;
+        }
+    }
+    return mst;
+}</code></pre>
+            </div>
+            
+            <h3 class="example-title">Complexity</h3>
+            <div class="note">
+                <strong>Time Complexity:</strong> O(E log E) for sorting + O(E α(V)) for Union-Find operations<br>
+                <strong>Space Complexity:</strong> O(V) for Union-Find structure<br>
+                <strong>Key Concept:</strong> Greedily adds shortest edge that doesn't form a cycle
+            </div>
+            
+            <div class="visualization">
+                <div class="circular-flow">
+                    <div class="circular-step">Sort Edges</div>
+                    <div class="circular-arrow">→</div>
+                    <div class="circular-step">Check Cycle</div>
+                    <div class="circular-arrow">→</div>
+                    <div class="circular-step">Add to MST</div>
+                    <div class="circular-arrow">→</div>
+                    <div class="circular-step">Repeat</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Topological Sort -->
+        <div class="concept-card">
+            <div class="concept-title">
+                <div class="concept-icon">
+                    <i class="fas fa-sort-amount-down"></i>
+                </div>
+                <h2>Topological Sort</h2>
+            </div>
+            
+            <div class="definition-box">
+                <p><strong>Definition:</strong> Linear ordering of vertices in a directed acyclic graph (DAG) where for every directed edge u→v, u comes before v in the ordering.</p>
+                <p><strong>Usage:</strong> Task scheduling, build systems, course prerequisites, event scheduling.</p>
+            </div>
+            
+            <div class="note">
+                <p><strong>Real-life Analogy:</strong> Like planning your day by ordering tasks based on dependencies (breakfast before work, work before dinner).</p>
+            </div>
+            
+            <h3 class="example-title">Kahn's Algorithm (BFS)</h3>
+            <div class="code-block">
+                <button class="copy-button">Copy</button>
+                <pre><code>vector&lt;int&gt; topologicalSort(vector&lt;list&lt;int&gt;&gt;& graph) {
+    int n = graph.size();
+    vector&lt;int&gt; in_degree(n, 0), result;
+    
+    for (int u = 0; u < n; u++)
+        for (int v : graph[u])
+            in_degree[v]++;
+    
+    queue&lt;int&gt; q;
+    for (int u = 0; u < n; u++)
+        if (in_degree[u] == 0) q.push(u);
+    
+    while (!q.empty()) {
+        int u = q.front(); q.pop();
+        result.push_back(u);
+        for (int v : graph[u]) {
+            if (--in_degree[v] == 0) {
+                q.push(v);
+            }
+        }
+    }
+    return result.size() == n ? result : vector&lt;int&gt;{};
+}</code></pre>
+            </div>
+            
+            <div class="visualization">
+                <strong>Example:</strong> Course prerequisites<br>
+                Courses: C1 → C2, C1 → C3, C2 → C4, C3 → C4<br>
+                Valid order: [C1, C2, C3, C4] or [C1, C3, C2, C4]
+            </div>
+            
+            <div class="circular-flow">
+                <div class="circular-step">Calculate In-Degree</div>
+                <div class="circular-arrow">→</div>
+                <div class="circular-step">Enqueue Zero In-Degree</div>
+                <div class="circular-arrow">→</div>
+                <div class="circular-step">Process Vertices</div>
+                <div class="circular-arrow">→</div>
+                <div class="circular-step">Update In-Degree</div>
+            </div>
+        </div>
+        
+        <!-- Dynamic Programming -->
+        <div class="concept-card">
+            <div class="concept-title">
+                <div class="concept-icon">
+                    <i class="fas fa-memory"></i>
+                </div>
+                <h2>Dynamic Programming</h2>
+            </div>
+            
+            <div class="definition-box">
+                <p><strong>Definition:</strong> A method for solving complex problems by breaking them down into simpler subproblems and storing the solutions to avoid redundant calculations.</p>
+                <p><strong>Usage:</strong> Optimization problems, sequence alignment, resource allocation, game theory.</p>
+            </div>
+            
+            <div class="note">
+                <p><strong>Real-life Analogy:</strong> Like solving a jigsaw puzzle by first solving smaller sections and combining them.</p>
+            </div>
+            
+            <h3 class="example-title">Longest Common Subsequence (LCS)</h3>
+            <div class="code-block">
+                <button class="copy-button">Copy</button>
+                <pre><code>int LCS(string& text1, string& text2) {
+    int m = text1.size(), n = text2.size();
+    vector&lt;vector&lt;int&gt;&gt; dp(m+1, vector&lt;int&gt;(n+1, 0));
+    
+    for (int i = 1; i <= m; i++) {
+        for (int j = 1; j <= n; j++) {
+            if (text1[i-1] == text2[j-1])
+                dp[i][j] = dp[i-1][j-1] + 1;
+            else
+                dp[i][j] = max(dp[i-1][j], dp[i][j-1]);
+        }
+    }
+    return dp[m][n];
+}</code></pre>
+            </div>
+            
+            <h3 class="example-title">Knapsack Problem</h3>
+            <div class="code-block">
+                <button class="copy-button">Copy</button>
+                <pre><code>int knapsack(vector&lt;int&gt;& weights, vector&lt;int&gt;& values, int capacity) {
+    int n = weights.size();
+    vector&lt;vector&lt;int&gt;&gt; dp(n+1, vector&lt;int&gt;(capacity+1, 0));
+    
+    for (int i = 1; i <= n; i++) {
+        for (int w = 1; w <= capacity; w++) {
+            if (weights[i-1] <= w)
+                dp[i][w] = max(values[i-1] + dp[i-1][w-weights[i-1]], 
+                              dp[i-1][w]);
+            else
+                dp[i][w] = dp[i-1][w];
+        }
+    }
+    return dp[n][capacity];
+}</code></pre>
+            </div>
+            
+            <div class="note">
+                <strong>Patterns:</strong> Optimal substructure + Overlapping subproblems → Store solutions<br>
+                <strong>Approaches:</strong> Memoization (top-down), Tabulation (bottom-up)
+            </div>
+            
+            <div class="circular-flow">
+                <div class="circular-step">Problem</div>
+                <div class="circular-arrow">→</div>
+                <div class="circular-step">Subproblems</div>
+                <div class="circular-arrow">→</div>
+                <div class="circular-step">Memoize</div>
+                <div class="circular-arrow">→</div>
+                <div class="circular-step">Solution</div>
+            </div>
+        </div>
+        
+        <!-- String Algorithms -->
+        <div class="concept-card">
+            <div class="concept-title">
+                <div class="concept-icon">
+                    <i class="fas fa-font"></i>
+                </div>
+                <h2>String Algorithms</h2>
+            </div>
+            
+            <div class="definition-box">
+                <p><strong>Definition:</strong> Algorithms designed to efficiently process and analyze strings and text data.</p>
+                <p><strong>Usage:</strong> Text editors, search engines, bioinformatics, data compression, plagiarism detection.</p>
+            </div>
+            
+            <div class="note">
+                <p><strong>Real-life Analogy:</strong> Like finding a specific word in a book using the index (pattern matching).</p>
+            </div>
+            
+            <h3 class="example-title">KMP Pattern Matching</h3>
+            <div class="code-block">
+                <button class="copy-button">Copy</button>
+                <pre><code>vector&lt;int&gt; computeLPS(string& pattern) {
+    int n = pattern.size();
+    vector&lt;int&gt; lps(n, 0);
+    for (int i = 1, len = 0; i < n; ) {
+        if (pattern[i] == pattern[len]) {
+            lps[i++] = ++len;
+        } else {
+            if (len) len = lps[len-1];
+            else lps[i++] = 0;
+        }
+    }
+    return lps;
+}
+
+vector&lt;int&gt; KMPSearch(string& text, string& pattern) {
+    vector&lt;int&gt; lps = computeLPS(pattern), result;
+    int m = text.size(), n = pattern.size();
+    
+    for (int i = 0, j = 0; i < m; ) {
+        if (text[i] == pattern[j]) {
+            i++;
+            j++;
+        }
+        if (j == n) {
+            result.push_back(i - j);
+            j = lps[j - 1];
+        }
+        else if (i < m && text[i] != pattern[j]) {
+            if (j != 0) j = lps[j - 1];
+            else i++;
+        }
+    }
+    return result;
+}</code></pre>
+            </div>
+            
+            <h3 class="example-title">Rabin-Karp (Rolling Hash)</h3>
+            <div class="code-block">
+                <button class="copy-button">Copy</button>
+                <pre><code>vector&lt;int&gt; rabinKarp(string& text, string& pattern) {
+    const int prime = 101;
+    int m = text.size(), n = pattern.size();
+    vector&lt;int&gt; result;
+    if (n == 0 || m < n) return result;
+
+    long pattern_hash = 0, window_hash = 0, power = 1;
+    for (int i = 0; i < n; i++) {
+        pattern_hash = pattern_hash * prime + pattern[i];
+        window_hash = window_hash * prime + text[i];
+        if (i) power *= prime;
+    }
+
+    for (int i = 0; i <= m - n; i++) {
+        if (window_hash == pattern_hash)
+            if (text.substr(i, n) == pattern)
+                result.push_back(i);
+        if (i < m - n)
+            window_hash = (window_hash - text[i] * power) * prime + text[i + n];
+    }
+    return result;
+}</code></pre>
+            </div>
+            
+            <div class="note">
+                <strong>Applications:</strong> Text search, plagiarism detection, DNA sequence alignment, spell checking
+            </div>
+            
+            <div class="circular-flow">
+                <div class="circular-step">Text</div>
+                <div class="circular-arrow">→</div>
+                <div class="circular-step">Pattern</div>
+                <div class="circular-arrow">→</div>
+                <div class="circular-step">Preprocess</div>
+                <div class="circular-arrow">→</div>
+                <div class="circular-step">Match</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Footer -->
+<footer class="footer">
+    <div class="footer-content">
+        <div style="margin-bottom: 2rem;">
+            <div class="logo" style="justify-content: center; font-size: 2rem; margin-bottom: 1rem;">
+                <i class="fas fa-project-diagram"></i>
+                <span>DSA Mastery</span>
+            </div>
+            <p style="color: var(--gray); max-width: 600px; margin: 0 auto;">
+                Your comprehensive platform for mastering Data Structures and Algorithms. From basics to advanced topics, we've got you covered!
+            </p>
+        </div>
+        <div class="social-links">
+            <a href="https://github.com/JUNAID9654" target="_blank" title="GitHub"><i class="fab fa-github"></i></a>
+            <a href="https://www.linkedin.com/in/junaid-beg-3b1944251/" target="_blank" title="LinkedIn"><i class="fab fa-linkedin"></i></a>
+            <a href="#" title="Twitter"><i class="fab fa-twitter"></i></a>
+            <a href="https://www.youtube.com/@junaidbeg6596" target="_blank" title="YouTube"><i class="fab fa-youtube"></i></a>
+            <a href="https://discord.com/channels/@me/1081579728261107819" target="_blank" title="Discord"><i class="fab fa-discord"></i></a>
+        </div>
+        <div class="copyright">
+            <p>&copy; 2025 DSA Mastery. All rights reserved. Made with ❤️ for aspiring programmers.</p>
+        </div>
+    </div>
+</footer>
+
+<script>
+    // Mobile menu toggle
+    const mobileMenuToggle = document.getElementById('mobileMenuToggle');
+    const navMenu = document.getElementById('navMenu');
+    
+    mobileMenuToggle.addEventListener('click', function() {
+        navMenu.classList.toggle('active');
+        const icon = this.querySelector('i');
+        if (icon.classList.contains('fa-bars')) {
+            icon.classList.remove('fa-bars');
+            icon.classList.add('fa-times');
+        } else {
+            icon.classList.remove('fa-times');
+            icon.classList.add('fa-bars');
+        }
+    });
+    
+    // Dropdown toggle for mobile
+    const dropdowns = document.querySelectorAll('.dropdown > a');
+    dropdowns.forEach(dropdown => {
+        dropdown.addEventListener('click', function(e) {
+            if (window.innerWidth <= 900) {
+                e.preventDefault();
+                const dropdown = this.parentElement;
+                dropdown.classList.toggle('active');
+            }
+        });
+    });
+    
+    // Close mobile menu when clicking outside
+    document.addEventListener('click', function(e) {
+        if (!navMenu.contains(e.target) && !mobileMenuToggle.contains(e.target) && navMenu.classList.contains('active')) {
+            navMenu.classList.remove('active');
+            mobileMenuToggle.querySelector('i').classList.remove('fa-times');
+            mobileMenuToggle.querySelector('i').classList.add('fa-bars');
+        }
+    });
+    
+    // Navbar background change on scroll
+    window.addEventListener('scroll', function() {
+        const navbar = document.querySelector('.navbar');
+        if (window.scrollY > 100) {
+            navbar.style.background = 'rgba(255, 255, 255, 0.98)';
+            navbar.style.boxShadow = '0 8px 32px rgba(0, 0, 0, 0.15)';
+        } else {
+            navbar.style.background = 'rgba(255, 255, 255, 0.95)';
+            navbar.style.boxShadow = '0 8px 32px rgba(0, 0, 0, 0.1)';
+        }
+    });
+    
+    // Copy button functionality
+    document.querySelectorAll('.copy-button').forEach(button => {
+        button.addEventListener('click', function() {
+            const codeBlock = this.nextElementSibling;
+            const textArea = document.createElement('textarea');
+            textArea.value = codeBlock.textContent;
+            document.body.appendChild(textArea);
+            textArea.select();
+            document.execCommand('copy');
+            document.body.removeChild(textArea);
+            
+            // Show copied feedback
+            const originalText = this.textContent;
+            this.textContent = 'Copied!';
+            setTimeout(() => {
+                this.textContent = originalText;
+            }, 1500);
+        });
+    });
+</script>
+</body>
+</html>
